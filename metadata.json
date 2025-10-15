@@ -1,0 +1,5 @@
+{
+    "name": "TOOL TẠO PROMPT ",
+    "description": "Một công cụ AI để tạo dàn ý video chi tiết và các prompt theo từng cảnh quay dựa trên một chủ đề cho trước. Người dùng có thể chỉnh sửa nội dung được tạo và xuất các prompt cuối cùng dưới dạng tệp văn bản.",
+    "requestFramePermissions": []
+  }
