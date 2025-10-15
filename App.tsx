@@ -396,7 +396,7 @@ const App: React.FC = () => {
       <div className="max-w-screen-2xl mx-auto space-y-8">
         <header className="text-center">
           <h1 className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 to-orange-600 pb-2">
-            TOOL TẠO PROMPT - TRUNG BLAZE
+            TOOL TẠO PROMPT - CHISTHONGG
           </h1>
           <p className="text-gray-400 mt-2 text-lg">
             Tạo kịch bản video hoàn hảo từ một ý tưởng duy nhất.
