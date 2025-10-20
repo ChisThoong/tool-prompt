@@ -280,7 +280,16 @@ You must return a JSON object with two keys: "story" (a single string with the f
       }
 
       if (parsed.prompts.length === numPrompts) {
-        return parsed; // Success!
+        // Gắn số thứ tự 2 chữ số cho mỗi prompt
+        const numberedPrompts = parsed.prompts.map((prompt: string, index: number) => {
+          const num = (index + 1).toString().padStart(2, "0"); // 01, 02, 03...
+          return `${num}. ${prompt.trim()}`;
+        });
+      
+        return {
+          story: parsed.story.trim(),
+          prompts: numberedPrompts,
+        };
       } else {
         lastKnownError = `AI đã tạo ${parsed.prompts.length} prompts, nhưng yêu cầu là ${numPrompts}.`;
         console.warn(`Attempt ${attempt}/${MAX_RETRIES}: ${lastKnownError} Retrying...`);
