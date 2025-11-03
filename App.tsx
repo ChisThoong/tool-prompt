@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback,useEffect } from 'react';
 import { generateOutline, generateStoryAndPrompts, analyzeCharacterImage } from './services/geminiService';
 import { Spinner } from './components/Spinner';
 import { DownloadIcon, SparklesIcon, CopyIcon, CheckIcon, UploadIcon, TrashIcon, PlusIcon } from './components/Icons';
+
 
 interface Character {
   id: number;
@@ -31,6 +32,11 @@ interface ControlPanelProps {
     setVideoStyle: (value: string) => void;
     handleGenerateAll: () => void;
     isLoading: boolean;
+    apiKey: string;
+    setApiKey: (value: string) => void;
+    isEditingKey: boolean;
+    handleSaveApiKey: () => void;
+    handleResetApiKey: () => void;
 }
 
 interface ResultsPanelProps {
@@ -45,6 +51,8 @@ interface ResultsPanelProps {
     handleCopyPrompt: (text: string, index: number) => void;
     copiedIndices: number[];
 }
+
+
 
 // Moved ControlPanel outside of App component to prevent re-creation on re-renders
 const ControlPanel: React.FC<ControlPanelProps> = ({
@@ -63,7 +71,12 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
     videoStyle,
     setVideoStyle,
     handleGenerateAll,
-    isLoading
+    isLoading,
+    apiKey,
+    setApiKey,
+    isEditingKey,
+    handleSaveApiKey,
+    handleResetApiKey,
 }) => {
     const promptCount = parseInt(numPrompts, 10);
     const totalSeconds = !isNaN(promptCount) && promptCount > 0 ? promptCount * 8 : 0;
@@ -72,6 +85,39 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
     
     return (
     <div className="w-full lg:w-1/3 xl:w-1/4 flex flex-col gap-6">
+        <section className="bg-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700">
+            <h2 className="text-xl font-semibold mb-3 text-yellow-400"> API Key</h2>
+            
+            {isEditingKey ? (
+                <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                    type="text"
+                    value={apiKey}
+                    onChange={(e) => setApiKey(e.target.value)}
+                    placeholder="Nhập Google GenAI API Key..."
+                    className="flex-grow bg-gray-700 border border-gray-600 rounded-md p-3 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition duration-200"
+                />
+                <button
+                    onClick={handleSaveApiKey}
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-md transition duration-300"
+                >
+                    Lưu Key
+                </button>
+                </div>
+            ) : (
+                <div className="flex justify-between items-center bg-gray-700 border border-gray-600 rounded-md p-3">
+                <p className="text-sm text-gray-300 break-all">
+                    Đã lưu key: <span className="text-yellow-400">{apiKey.slice(0, 8)}...</span>
+                </p>
+                <button
+                    onClick={handleResetApiKey}
+                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-md text-sm transition duration-300"
+                >
+                    Đổi Key
+                </button>
+                </div>
+            )}
+            </section>
        <section className="bg-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700">
             <h2 className="text-xl font-semibold mb-3 text-yellow-400">1. Ý tưởng</h2>
             <div className="space-y-4">
@@ -262,6 +308,31 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
 
 const App: React.FC = () => {
   const [theme, setTheme] = useState<string>('');
+  const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem("genai_api_key") || "");
+const [isEditingKey, setIsEditingKey] = useState<boolean>(!apiKey);
+
+useEffect(() => {
+  if (apiKey) {
+    localStorage.setItem("genai_api_key", apiKey);
+  }
+}, [apiKey]);
+
+const handleSaveApiKey = () => {
+  if (!apiKey.trim()) {
+    alert("API key không được để trống!");
+    return;
+  }
+  localStorage.setItem("genai_api_key", apiKey.trim());
+  setIsEditingKey(false);
+  window.location.reload(); // reload để GeminiService lấy key mới
+};
+
+const handleResetApiKey = () => {
+  localStorage.removeItem("genai_api_key");
+  setApiKey("");
+  setIsEditingKey(true);
+};
+
   const [detailedDescription, setDetailedDescription] = useState<string>('');
   const [characters, setCharacters] = useState<Character[]>([
     { id: Date.now(), description: '', image: null, imageName: '' }
@@ -411,24 +482,30 @@ const App: React.FC = () => {
         )}
 
         <main className="flex flex-col lg:flex-row gap-8">
-           <ControlPanel 
-                theme={theme}
-                setTheme={setTheme}
-                detailedDescription={detailedDescription}
-                setDetailedDescription={setDetailedDescription}
-                characters={characters}
-                addCharacter={addCharacter}
-                removeCharacter={removeCharacter}
-                handleCharacterDescriptionChange={handleCharacterDescriptionChange}
-                handleImageUpload={handleImageUpload}
-                removeImage={removeImage}
-                numPrompts={numPrompts}
-                setNumPrompts={setNumPrompts}
-                videoStyle={videoStyle}
-                setVideoStyle={setVideoStyle}
-                handleGenerateAll={handleGenerateAll}
-                isLoading={isLoading}
-           />
+        <ControlPanel
+            theme={theme}
+            setTheme={setTheme}
+            detailedDescription={detailedDescription}
+            setDetailedDescription={setDetailedDescription}
+            characters={characters}
+            addCharacter={addCharacter}
+            removeCharacter={removeCharacter}
+            handleCharacterDescriptionChange={handleCharacterDescriptionChange}
+            handleImageUpload={handleImageUpload}
+            removeImage={removeImage}
+            numPrompts={numPrompts}
+            setNumPrompts={setNumPrompts}
+            videoStyle={videoStyle}
+            setVideoStyle={setVideoStyle}
+            handleGenerateAll={handleGenerateAll}
+            isLoading={isLoading}
+            apiKey={apiKey}
+            setApiKey={setApiKey}
+            isEditingKey={isEditingKey}
+            handleSaveApiKey={handleSaveApiKey}
+            handleResetApiKey={handleResetApiKey}
+            />
+
            <ResultsPanel 
                 isLoading={isLoading}
                 prompts={prompts}

@@ -6,11 +6,29 @@ import { GoogleGenAI, Type } from "@google/genai";
 //   throw new Error("API_KEY environment variable not set");
 // }
 
-const apiKey = import.meta.env.VITE_API_KEY;
+// const apiKey = import.meta.env.VITE_API_KEY;
 
-if (!apiKey) {
-  throw new Error("VITE_API_KEY environment variable not set");
+// if (!apiKey) {
+//   throw new Error("VITE_API_KEY environment variable not set");
+// }
+
+function getApiKey(): string {
+  let apiKey = localStorage.getItem("genai_api_key");
+
+  if (!apiKey) {
+    apiKey = prompt("Please enter your Google GenAI API key:");
+    if (apiKey) {
+      localStorage.setItem("genai_api_key", apiKey);
+    } else {
+      throw new Error("API key is required to continue.");
+    }
+  }
+
+  return apiKey;
 }
+
+//  Lấy API key
+const apiKey = getApiKey();
 
 const ai = new GoogleGenAI({ apiKey:apiKey });
 
@@ -135,7 +153,6 @@ export const generateStoryAndPrompts = async (
 **Video Style: Animation & Generative Art**
 - Prompts should specify an animation style (e.g., "2D flat animation", "3D claymation style", "Japanese anime style", "stop-motion").
 - Encourage abstract and surreal visuals.
-- Incorporate generative art elements like evolving patterns, fractals, or particle systems where appropriate.
 - The visual description should be imaginative and not limited by realism.
 `;
             case 'simulation':
@@ -174,6 +191,9 @@ You have been provided with "Character Sheets" containing detailed descriptions 
 First, write a detailed and engaging story in Vietnamese that follows the provided outline. The story should be structured to match the ${numPrompts} prompts that will be created. ${videoStyle === 'ai-lip-sync' ? 'The story MUST include dialogue for the characters.' : ''}
 
 Second, based on the story you just wrote, create an array of exactly ${numPrompts} video prompts in English. Each prompt must describe a single, continuous 8-second scene and follow the story logically.
+YOU MUST return exactly ${numPrompts} prompts.
+If you return fewer or more, your output will be considered invalid.
+Do not merge or split prompts. Each scene = 1 prompt = 8 seconds.
 
 **Prompt Structure:** Each prompt MUST be a single, continuous string, structured with specific bracketed sections. Follow this format precisely for every prompt.
 \`[STYLE KEYWORDS] - [MAIN CHARACTER 1: Full Description] [SCENE: Description] [LIGHTING: Description] [AUDIO: Description] [TIME/LOCATION: Description]\`
