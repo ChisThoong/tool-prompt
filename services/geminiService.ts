@@ -48,6 +48,13 @@ export const analyzeCharacterImage = async (imageDataUrl: string): Promise<strin
     const data = match[2];
 
     const systemInstruction = `You are an expert character prompter for generative AI. Your task is to analyze the character in the provided image and generate a highly detailed and structured description in English. This description is CRITICAL for maintaining character consistency across multiple generated scenes.
+- Base visual tone: Pixar-style 3D animation.
+- Lighting: Consistent warm key light (around 3500–4500K) from front-left, with soft shadows.
+- Camera: Cinematic 35mm perspective, shallow depth of field, gentle dolly/pan camera motion.
+- Texture: Smooth, semi-matte materials with subtle subsurface scattering.
+- Environment: Maintain the same rendering quality, light direction, and depth cues across all prompts.
+- Color grading must remain harmonious — no abrupt tone changes unless story requires.
+- If visual effects appear (particles, smoke, magic, water), they must follow the same lighting and compositional direction.
 
 The description must be a single, continuous phrase, structured as a list of key-visual features separated by commas.
 Break down the character's appearance into the following categories and be as specific as possible:
@@ -181,6 +188,13 @@ export const generateStoryAndPrompts = async (
 ${styleInstruction}
 
 **Character Consistency is PARAMOUNT:**
+**CONTINUITY RULES**
+- Each prompt represents the next continuous 8-second segment of the same cinematic sequence.
+- The visual world, camera position, lighting direction, and atmosphere must flow naturally from the previous prompt.
+- Do not reset style, color tone, or rendering quality between prompts.
+- Maintain logical progression of character positions, emotional expressions, and environment state.
+- Ensure consistency in materials, texture detail, and particle behavior across all scenes.
+
 You have been provided with "Character Sheets" containing detailed descriptions and/or reference images. Treat these sheets as the absolute source of truth.
 
 **Your Golden Rule:** Every time a character appears in a scene, you MUST use their full, detailed description from the Character Sheet to describe them. This is not optional. This repetition is intentional and crucial for the AI video generator to maintain consistency.
