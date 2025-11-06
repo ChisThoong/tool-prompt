@@ -212,7 +212,7 @@ Do not merge or split prompts. Each scene = 1 prompt = 8 seconds.
 
 1.  **[STYLE KEYWORDS]:**
     - Start with a list of 5-10 comma-separated keywords that define the visual style and quality. Examples: "hyper-realistic textures, photorealistic rendering, naturalistic lighting, lifelike details, cinematic realism, tactile surfaces".
-
+    -If the scene is in an animation style, ensure it remains realistic and grounded — not dreamy, not surreal, and without excessive stylization or decorative patterns. The animation should have believable lighting, natural materials, balanced proportions, and emotionally expressive characters, similar to Pixar, DreamWorks, or realistic anime films (e.g., Makoto Shinkai). Focus on real-world physics, subtle surface detail, and cinematic color harmony to maintain visual authenticity
 2.  **[MAIN CHARACTER 1: Full Description]:**
     - For EACH character present in the scene, you must include a dedicated bracketed section. Use "MAIN CHARACTER 1", "MAIN CHARACTER 2", etc., corresponding to their character sheet.
     - The bracket MUST start with \`[MAIN CHARACTER [number]:\`.
