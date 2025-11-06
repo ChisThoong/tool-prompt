@@ -159,8 +159,6 @@ export const generateStoryAndPrompts = async (
                 return `
 **Video Style: Animation & Generative Art**
 - Prompts should specify an animation style (e.g., "2D flat animation", "3D claymation style", "Japanese anime style", "stop-motion").
-- Encourage abstract and surreal visuals.
-- The visual description should be imaginative and not limited by realism.
 `;
             case 'simulation':
                 return `
